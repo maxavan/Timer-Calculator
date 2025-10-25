@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timer End Calculator</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0984e3" />
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #74b9ff, #81ecec);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #2d3436;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 20px; }
+    .container {
+      background: white; padding: 20px; border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; max-width: 380px;
+    }
+    label { display: block; margin-top: 10px; font-weight: 600; text-align: left; }
+    input {
+      width: 100%; padding: 8px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 8px; font-size: 1rem;
+    }
+    button {
+      margin-top: 20px; width: 100%; padding: 12px;
+      background: #0984e3; color: white; border: none;
+      border-radius: 10px; font-size: 1.1rem; cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover { background: #74b9ff; }
+    #result { margin-top: 20px; font-size: 1.2rem; font-weight: 600; color: #2d3436; }
+  </style>
+</head>
+<body>
+  <h1>🕒 Timer End Calculator</h1>
+  <div class="container">
+    <label>Current Time:</label>
+    <input type="datetime-local" id="currentTime" />
+    <label>Timer Duration:</label>
+    <div style="display: flex; gap: 10px;">
+      <input type="number" id="days" placeholder="Days" min="0">
+      <input type="number" id="hours" placeholder="Hours" min="0" max="23">
+      <input type="number" id="minutes" placeholder="Minutes" min="0" max="59">
+    </div>
+    <button id="calculateBtn">Calculate End Time</button>
+    <div id="result"></div>
+  </div>
+  <script>
+    document.getElementById("calculateBtn").addEventListener("click", () => {
+      const currentInput = document.getElementById("currentTime").value;
+      const days = parseInt(document.getElementById("days").value || 0);
+      const hours = parseInt(document.getElementById("hours").value || 0);
+      const minutes = parseInt(document.getElementById("minutes").value || 0);
+      const resultDiv = document.getElementById("result");
+      if (!currentInput) { resultDiv.textContent = "⚠️ Please select a current time."; return; }
+      const currentDate = new Date(currentInput);
+      const endTime = new Date(currentDate.getTime() + (
+        (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000)
+      ));
+      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit' };
+      resultDiv.textContent = `⏰ Timer ends at: ${endTime.toLocaleString(undefined, options)}`;
+    });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker Registered'));
+    }
+  </script>
+</body>
+</html>
